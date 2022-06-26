@@ -22,6 +22,7 @@ import org.assertj.core.api.Condition;
  * @author Mikhail Mazursky
  */
 public class AllOf<T> extends Join<T> {
+  private final String descriptionPrefix;
 
   /**
    * Creates a new <code>{@link AllOf}</code>
@@ -33,7 +34,21 @@ public class AllOf<T> extends Join<T> {
    */
   @SafeVarargs
   public static <T> Condition<T> allOf(Condition<? super T>... conditions) {
-    return new AllOf<>(conditions);
+    return allOf(ALL_OF, conditions);
+  }
+
+  /**
+   * Creates a new <code>{@link AllOf}</code>
+   * @param <T> the type of object the given condition accept.
+   * @param descriptionPrefix the prefix to use to build the description.
+   * @param conditions the conditions to evaluate.
+   * @return the created {@code AllOf}.
+   * @throws NullPointerException if the given array is {@code null}.
+   * @throws NullPointerException if any of the elements in the given array is {@code null}.
+   */
+  @SafeVarargs
+  public static <T> Condition<T> allOf(String descriptionPrefix, Condition<? super T>... conditions) {
+    return new AllOf<>(descriptionPrefix, conditions);
   }
 
   /**
@@ -45,16 +60,31 @@ public class AllOf<T> extends Join<T> {
    * @throws NullPointerException if any of the elements in the given iterable is {@code null}.
    */
   public static <T> Condition<T> allOf(Iterable<? extends Condition<? super T>> conditions) {
-    return new AllOf<>(conditions);
+    return allOf(ALL_OF, conditions);
+  }
+
+  /**
+   * Creates a new <code>{@link AllOf}</code>
+   * @param <T> the type of object the given condition accept.
+   * @param descriptionPrefix the prefix to use to build the description.
+   * @param conditions the conditions to evaluate.
+   * @return the created {@code AllOf}.
+   * @throws NullPointerException if the given iterable is {@code null}.
+   * @throws NullPointerException if any of the elements in the given iterable is {@code null}.
+   */
+  public static <T> Condition<T> allOf(String descriptionPrefix, Iterable<? extends Condition<? super T>> conditions) {
+    return new AllOf<>(descriptionPrefix, conditions);
   }
 
   @SafeVarargs
-  private AllOf(Condition<? super T>... conditions) {
+  private AllOf(String descriptionPrefix, Condition<? super T>... conditions) {
     super(conditions);
+    this.descriptionPrefix = descriptionPrefix;
   }
 
-  private AllOf(Iterable<? extends Condition<? super T>> conditions) {
+  private AllOf(String descriptionPrefix, Iterable<? extends Condition<? super T>> conditions) {
     super(conditions);
+    this.descriptionPrefix = descriptionPrefix;
   }
 
   /** {@inheritDoc} */
@@ -65,6 +95,8 @@ public class AllOf<T> extends Join<T> {
 
   @Override
   public String descriptionPrefix() {
-    return "all of";
+    return descriptionPrefix;
   }
+
+  private static final String ALL_OF = "all of";
 }

@@ -54,6 +54,30 @@ class AllOf_toString_Test {
   }
 
   @Test
+  void should_implement_toString_showing_custom_prefix() {
+    // GIVEN
+    TestCondition<Object> condition1 = new TestCondition<>("Condition 1");
+    TestCondition<Object> condition2 = new TestCondition<>("Condition 2");
+    DynamicCondition<Object> condition3 = new DynamicCondition<>("Condition 3");
+    Condition<Object> allOf = allOf("custom prefix", condition1, condition2, condition3);
+    // THEN
+    then(allOf).hasToString(format("custom prefix:[%n" +
+                                   "   Condition 1,%n" +
+                                   "   Condition 2,%n" +
+                                   "   Condition 3%n" +
+                                   "]"));
+    condition1.shouldMatch(true);
+    condition2.shouldMatch(true);
+    allOf.matches(true);
+
+    then(allOf).hasToString(format("custom prefix:[%n" +
+                                   "   Condition 1,%n" +
+                                   "   Condition 2,%n" +
+                                   "   ChangedDescription%n" +
+                                   "]"));
+  }
+
+  @Test
   void should_implement_toString_showing_descriptions_of_inner_Conditions_list() {
     // GIVEN
     TestCondition<Object> condition1 = new TestCondition<>("Condition 1");
@@ -73,6 +97,30 @@ class AllOf_toString_Test {
     allOf.matches(true);
     // THEN
     then(allOf).hasToString(format("all of:[%n" +
+                                   "   Condition 1,%n" +
+                                   "   Condition 2,%n" +
+                                   "   ChangedDescription%n" +
+                                   "]"));
+  }
+
+  @Test
+  void should_implement_toString_showing_custom_prefix_list() {
+    // GIVEN
+    TestCondition<Object> condition1 = new TestCondition<>("Condition 1");
+    TestCondition<Object> condition2 = new TestCondition<>("Condition 2");
+    DynamicCondition<Object> condition3 = new DynamicCondition<>("Condition 3");
+    Condition<Object> allOf = allOf("custom prefix", list(condition1, condition2, condition3));
+    // THEN
+    then(allOf).hasToString(format("custom prefix:[%n" +
+                                   "   Condition 1,%n" +
+                                   "   Condition 2,%n" +
+                                   "   Condition 3%n" +
+                                   "]"));
+    condition1.shouldMatch(true);
+    condition2.shouldMatch(true);
+    allOf.matches(true);
+
+    then(allOf).hasToString(format("custom prefix:[%n" +
                                    "   Condition 1,%n" +
                                    "   Condition 2,%n" +
                                    "   ChangedDescription%n" +
